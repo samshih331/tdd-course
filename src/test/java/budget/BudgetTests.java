@@ -36,21 +36,13 @@ public class BudgetTests {
   @Test
   public void queryWholeMonth() {
 
+    int[] amounts = { 310000, 30000, 1000 };
+    String[] yearMonths = { "202104", "202105", "202110" };
     List<Budget> budgets = new ArrayList<>();
-    Budget april2021 = new Budget();
-    april2021.setAmount(310000);
-    april2021.setYearMonth("202104");
-    budgets.add(april2021);
 
-    Budget may2021 = new Budget();
-    may2021.setAmount(30000);
-    may2021.setYearMonth("202105");
-    budgets.add(may2021);
-
-    Budget oct2021 = new Budget();
-    oct2021.setAmount(1000);
-    oct2021.setYearMonth("202110");
-    budgets.add(oct2021);
+    for (int i = 0; i < amounts.length; i++) {
+      budgets.add(new Budget(yearMonths[i], amounts[i]));
+    }
 
     when(budgetRepo.getAll()).thenReturn(budgets);
 
@@ -62,21 +54,13 @@ public class BudgetTests {
 
   @Test
   public void queryWhole2Month() {
+    int[] amounts = { 310000, 30000, 1000 };
+    String[] yearMonths = { "202104", "202105", "202110" };
     List<Budget> budgets = new ArrayList<>();
-    Budget april2021 = new Budget();
-    april2021.setAmount(310000);
-    april2021.setYearMonth("202104");
-    budgets.add(april2021);
 
-    Budget may2021 = new Budget();
-    may2021.setAmount(30000);
-    may2021.setYearMonth("202105");
-    budgets.add(may2021);
-
-    Budget oct2021 = new Budget();
-    oct2021.setAmount(1000);
-    oct2021.setYearMonth("202110");
-    budgets.add(oct2021);
+    for (int i = 0; i < amounts.length; i++) {
+      budgets.add(new Budget(yearMonths[i], amounts[i]));
+    }
 
     when(budgetRepo.getAll()).thenReturn(budgets);
 
@@ -86,12 +70,13 @@ public class BudgetTests {
 
   @Test
   public void queryPartialMonth() {
+    int[] amounts = { 3100 };
+    String[] yearMonths = { "202110" };
     List<Budget> budgets = new ArrayList<>();
 
-    Budget oct2021 = new Budget();
-    oct2021.setAmount(3100);
-    oct2021.setYearMonth("202110");
-    budgets.add(oct2021);
+    for (int i = 0; i < amounts.length; i++) {
+      budgets.add(new Budget(yearMonths[i], amounts[i]));
+    }
 
     when(budgetRepo.getAll()).thenReturn(budgets);
 
@@ -109,17 +94,13 @@ public class BudgetTests {
 
   @Test
   public void queryPartial2Month() {
+    int[] amounts = { 310000, 30000 };
+    String[] yearMonths = { "202110", "202111" };
     List<Budget> budgets = new ArrayList<>();
 
-    Budget april2021 = new Budget();
-    april2021.setAmount(310000);
-    april2021.setYearMonth("202110");
-    budgets.add(april2021);
-
-    Budget may2021 = new Budget();
-    may2021.setAmount(30000);
-    may2021.setYearMonth("202111");
-    budgets.add(may2021);
+    for (int i = 0; i < amounts.length; i++) {
+      budgets.add(new Budget(yearMonths[i], amounts[i]));
+    }
 
     when(budgetRepo.getAll()).thenReturn(budgets);
 
@@ -137,22 +118,13 @@ public class BudgetTests {
 
   @Test
   public void queryPartial3Month() {
+    int[] amounts = { 300000, 31000, 30 };
+    String[] yearMonths = { "202104", "202105", "202106" };
     List<Budget> budgets = new ArrayList<>();
 
-    Budget april2021 = new Budget();
-    april2021.setAmount(300000);
-    april2021.setYearMonth("202104");
-    budgets.add(april2021);
-
-    Budget may2021 = new Budget();
-    may2021.setAmount(31000);
-    may2021.setYearMonth("202105");
-    budgets.add(may2021);
-
-    Budget june2021 = new Budget();
-    june2021.setAmount(30);
-    june2021.setYearMonth("202106");
-    budgets.add(june2021);
+    for (int i = 0; i < amounts.length; i++) {
+      budgets.add(new Budget(yearMonths[i], amounts[i]));
+    }
 
     when(budgetRepo.getAll()).thenReturn(budgets);
     double queryBudget = finance.queryBudget(LocalDate.of(2021, 4, 30), LocalDate.of(2021, 6, 3));

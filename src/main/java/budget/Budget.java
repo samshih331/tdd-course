@@ -1,23 +1,15 @@
 package budget;
 
-public class Budget {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class Budget {
   String yearMonth;
   Integer amount;
-
-  public Integer getAmount() {
-    return amount;
-  }
-
-  public void setAmount(Integer amount) {
-    this.amount = amount;
-  }
-
-  public String getYearMonth() {
-    return yearMonth;
-  }
-
-  public void setYearMonth(String yearMonth) {
-    this.yearMonth = yearMonth;
-  }
 }
