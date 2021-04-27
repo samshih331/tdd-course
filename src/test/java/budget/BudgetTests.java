@@ -79,6 +79,15 @@ public class BudgetTests {
     Assertions.assertEquals(queryBudget, 1000d);
   }
 
+  @Test
+  public void queryNoData() {
+    List<Budget> budgets = new ArrayList<>();
+    budgetRepo.setBudgets(budgets);
+    finance = new Finance(budgetRepo);
+    double queryBudget = this.finance.queryBudget(LocalDate.of(2021, 4, 1), LocalDate.of(2021, 5, 31));
+    Assertions.assertEquals(queryBudget, 0);
+  }
+
   class BudgetRepoImpl implements BudgetRepo {
     private List<Budget> budgets;
 
