@@ -2,10 +2,16 @@ package budget;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.mockito.Mockito.when;
 
 /*
 算預算
@@ -19,13 +25,17 @@ LocalDate
 要計算預算的比例 依照天數比例計算
 有可能沒資料
  */
+@ExtendWith(MockitoExtension.class)
 public class BudgetTests {
 
+  @InjectMocks
   private Finance finance;
-  private final BudgetRepoImpl budgetRepo = new BudgetRepoImpl();
+  @Mock
+  BudgetRepo budgetRepo;
 
   @Test
   public void queryWholeMonth() {
+
     List<Budget> budgets = new ArrayList<>();
     Budget april2021 = new Budget();
     april2021.setAmount(310000);
@@ -41,7 +51,8 @@ public class BudgetTests {
     oct2021.setAmount(1000);
     oct2021.setYearMonth("202110");
     budgets.add(oct2021);
-    budgetRepo.setBudgets(budgets);
+
+    when(budgetRepo.getAll()).thenReturn(budgets);
 
     finance = new Finance(budgetRepo);
 
@@ -66,9 +77,9 @@ public class BudgetTests {
     oct2021.setAmount(1000);
     oct2021.setYearMonth("202110");
     budgets.add(oct2021);
-    budgetRepo.setBudgets(budgets);
 
-    finance = new Finance(budgetRepo);
+    when(budgetRepo.getAll()).thenReturn(budgets);
+
     double queryBudget = this.finance.queryBudget(LocalDate.of(2021, 4, 1), LocalDate.of(2021, 5, 31));
     Assertions.assertEquals(queryBudget, 340000d);
   }
@@ -82,8 +93,8 @@ public class BudgetTests {
     oct2021.setYearMonth("202110");
     budgets.add(oct2021);
 
-    budgetRepo.setBudgets(budgets);
-    finance = new Finance(budgetRepo);
+    when(budgetRepo.getAll()).thenReturn(budgets);
+
     double queryBudget = finance.queryBudget(LocalDate.of(2021, 10, 1), LocalDate.of(2021, 10, 10));
     Assertions.assertEquals(queryBudget, 1000d);
   }
@@ -91,8 +102,7 @@ public class BudgetTests {
   @Test
   public void queryNoData() {
     List<Budget> budgets = new ArrayList<>();
-    budgetRepo.setBudgets(budgets);
-    finance = new Finance(budgetRepo);
+    when(budgetRepo.getAll()).thenReturn(budgets);
     double queryBudget = this.finance.queryBudget(LocalDate.of(2021, 4, 1), LocalDate.of(2021, 5, 31));
     Assertions.assertEquals(queryBudget, 0);
   }
@@ -111,8 +121,8 @@ public class BudgetTests {
     may2021.setYearMonth("202111");
     budgets.add(may2021);
 
-    budgetRepo.setBudgets(budgets);
-    finance = new Finance(budgetRepo);
+    when(budgetRepo.getAll()).thenReturn(budgets);
+
     double queryBudget = finance.queryBudget(LocalDate.of(2021, 10, 30), LocalDate.of(2021, 11, 10));
     Assertions.assertEquals(queryBudget, 30000);
   }
@@ -120,8 +130,7 @@ public class BudgetTests {
   @Test
   public void queryInvalidPeriod() {
     List<Budget> budgets = new ArrayList<>();
-    budgetRepo.setBudgets(budgets);
-    finance = new Finance(budgetRepo);
+    when(budgetRepo.getAll()).thenReturn(budgets);
     double queryBudget = this.finance.queryBudget(LocalDate.of(2021, 5, 1), LocalDate.of(2021, 4, 30));
     Assertions.assertEquals(queryBudget, 0);
   }
@@ -145,22 +154,9 @@ public class BudgetTests {
     june2021.setYearMonth("202106");
     budgets.add(june2021);
 
-    budgetRepo.setBudgets(budgets);
-    finance = new Finance(budgetRepo);
+    when(budgetRepo.getAll()).thenReturn(budgets);
     double queryBudget = finance.queryBudget(LocalDate.of(2021, 4, 30), LocalDate.of(2021, 6, 3));
     Assertions.assertEquals(queryBudget, 41003);
   }
 
-  class BudgetRepoImpl implements BudgetRepo {
-    private List<Budget> budgets;
-
-    @Override
-    public List<Budget> getAll() {
-      return budgets;
-    }
-
-    public void setBudgets(List<Budget> budgets) {
-      this.budgets = budgets;
-    }
-  }
 }
