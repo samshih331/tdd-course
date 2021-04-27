@@ -77,6 +77,59 @@ public class BudgetTests {
   public void queryPartialMonth() {
     List<Budget> budgets = new ArrayList<>();
 
+    Budget oct2021 = new Budget();
+    oct2021.setAmount(3100);
+    oct2021.setYearMonth("202110");
+    budgets.add(oct2021);
+
+    budgetRepo.setBudgets(budgets);
+    finance = new Finance(budgetRepo);
+    double queryBudget = finance.queryBudget(LocalDate.of(2021, 10, 1), LocalDate.of(2021, 10, 10));
+    Assertions.assertEquals(queryBudget, 1000d);
+  }
+
+  @Test
+  public void queryNoData() {
+    List<Budget> budgets = new ArrayList<>();
+    budgetRepo.setBudgets(budgets);
+    finance = new Finance(budgetRepo);
+    double queryBudget = this.finance.queryBudget(LocalDate.of(2021, 4, 1), LocalDate.of(2021, 5, 31));
+    Assertions.assertEquals(queryBudget, 0);
+  }
+
+  @Test
+  public void queryPartial2Month() {
+    List<Budget> budgets = new ArrayList<>();
+
+    Budget april2021 = new Budget();
+    april2021.setAmount(310000);
+    april2021.setYearMonth("202110");
+    budgets.add(april2021);
+
+    Budget may2021 = new Budget();
+    may2021.setAmount(30000);
+    may2021.setYearMonth("202111");
+    budgets.add(may2021);
+
+    budgetRepo.setBudgets(budgets);
+    finance = new Finance(budgetRepo);
+    double queryBudget = finance.queryBudget(LocalDate.of(2021, 10, 30), LocalDate.of(2021, 11, 10));
+    Assertions.assertEquals(queryBudget, 30000);
+  }
+
+  @Test
+  public void queryInvalidPeriod() {
+    List<Budget> budgets = new ArrayList<>();
+    budgetRepo.setBudgets(budgets);
+    finance = new Finance(budgetRepo);
+    double queryBudget = this.finance.queryBudget(LocalDate.of(2021, 5, 1), LocalDate.of(2021, 4, 30));
+    Assertions.assertEquals(queryBudget, 0);
+  }
+
+  @Test
+  public void queryPartial3Month() {
+    List<Budget> budgets = new ArrayList<>();
+
     Budget april2021 = new Budget();
     april2021.setAmount(300000);
     april2021.setYearMonth("202104");
@@ -96,39 +149,6 @@ public class BudgetTests {
     finance = new Finance(budgetRepo);
     double queryBudget = finance.queryBudget(LocalDate.of(2021, 4, 30), LocalDate.of(2021, 6, 3));
     Assertions.assertEquals(queryBudget, 41003);
-  }
-
-  @Test
-  public void queryNoData() {
-    List<Budget> budgets = new ArrayList<>();
-    budgetRepo.setBudgets(budgets);
-    finance = new Finance(budgetRepo);
-    double queryBudget = this.finance.queryBudget(LocalDate.of(2021, 4, 1), LocalDate.of(2021, 5, 31));
-    Assertions.assertEquals(queryBudget, 0);
-  }
-
-  @Test
-  public void queryPartial3Month() {
-    List<Budget> budgets = new ArrayList<>();
-
-    Budget oct2021 = new Budget();
-    oct2021.setAmount(3100);
-    oct2021.setYearMonth("202110");
-    budgets.add(oct2021);
-
-    budgetRepo.setBudgets(budgets);
-    finance = new Finance(budgetRepo);
-    double queryBudget = finance.queryBudget(LocalDate.of(2021, 10, 1), LocalDate.of(2021, 10, 10));
-    Assertions.assertEquals(queryBudget, 1000d);
-  }
-
-  @Test
-  public void queryInvalidPeriod() {
-    List<Budget> budgets = new ArrayList<>();
-    budgetRepo.setBudgets(budgets);
-    finance = new Finance(budgetRepo);
-    double queryBudget = this.finance.queryBudget(LocalDate.of(2021, 5, 1), LocalDate.of(2021, 4, 30));
-    Assertions.assertEquals(queryBudget, 0);
   }
 
   class BudgetRepoImpl implements BudgetRepo {
