@@ -88,6 +88,15 @@ public class BudgetTests {
     Assertions.assertEquals(queryBudget, 0);
   }
 
+  @Test
+  public void queryInvalidPerid() {
+    List<Budget> budgets = new ArrayList<>();
+    budgetRepo.setBudgets(budgets);
+    finance = new Finance(budgetRepo);
+    double queryBudget = this.finance.queryBudget(LocalDate.of(2021, 5, 1), LocalDate.of(2021, 4, 30));
+    Assertions.assertEquals(queryBudget, 0);
+  }
+
   class BudgetRepoImpl implements BudgetRepo {
     private List<Budget> budgets;
 
