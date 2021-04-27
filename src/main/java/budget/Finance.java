@@ -24,27 +24,31 @@ public class Finance {
       String yearMonth = budget.getYearMonth();
       Integer amount = budget.getAmount();
 
-      DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyyMM");
-      YearMonth ym = YearMonth.parse(yearMonth, fmt);
-      LocalDate dt = ym.atDay(1);
+      DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyyMM");
+      YearMonth currentYearmonth = YearMonth.parse(yearMonth, dateTimeFormatter);
 
-      if (dt.getMonth().equals(start.getMonth()) || dt.getMonth().equals(end.getMonth()) || dt.isAfter(start) && dt
-          .isBefore(end)) {
-        int monthTotalDays = ym.atEndOfMonth().getDayOfMonth();
+      YearMonth startYearMonth = YearMonth.from(start);
+      YearMonth endYearMonth = YearMonth.from(end);
+
+      if (currentYearmonth.equals(startYearMonth)
+          || currentYearmonth.equals(endYearMonth)
+          || (currentYearmonth.isAfter(startYearMonth)
+              && currentYearmonth.isBefore(endYearMonth))) {
+        int monthTotalDays = currentYearmonth.atEndOfMonth().getDayOfMonth();
 
         LocalDate startCondition;
         LocalDate endCondition;
 
-        if (start.getMonth().equals(dt.getMonth())) {
+        if (currentYearmonth.equals(startYearMonth)) {
           startCondition = start;
         } else {
-          startCondition = ym.atDay(1);
+          startCondition = currentYearmonth.atDay(1);
         }
 
-        if (end.getMonth().equals(dt.getMonth())) {
+        if (currentYearmonth.equals(endYearMonth)) {
           endCondition = end;
         } else {
-          endCondition = ym.atEndOfMonth();
+          endCondition = currentYearmonth.atEndOfMonth();
         }
 
         long days = DAYS.between(startCondition, endCondition) + 1;

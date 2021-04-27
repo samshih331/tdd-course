@@ -1,5 +1,6 @@
 package budget;
 
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,25 +29,16 @@ LocalDate
 @ExtendWith(MockitoExtension.class)
 public class BudgetTests {
 
-  @InjectMocks
-  private Finance finance;
-  @Mock
-  BudgetRepo budgetRepo;
+  @InjectMocks private Finance finance;
+  @Mock BudgetRepo budgetRepo;
 
   @Test
   public void queryWholeMonth() {
-
-    int[] amounts = { 310000, 30000, 1000 };
-    String[] yearMonths = { "202104", "202105", "202110" };
-    List<Budget> budgets = new ArrayList<>();
-
-    for (int i = 0; i < amounts.length; i++) {
-      budgets.add(new Budget(yearMonths[i], amounts[i]));
-    }
+    int[] amounts = {310000, 30000, 1000};
+    String[] yearMonths = {"202104", "202105", "202110"};
+    List<Budget> budgets = getBudgets(amounts, yearMonths);
 
     when(budgetRepo.getAll()).thenReturn(budgets);
-
-    finance = new Finance(budgetRepo);
 
     double queryBudget = finance.queryBudget(LocalDate.of(2021, 4, 1), LocalDate.of(2021, 4, 30));
     Assertions.assertEquals(queryBudget, 310000d);
@@ -54,29 +46,21 @@ public class BudgetTests {
 
   @Test
   public void queryWhole2Month() {
-    int[] amounts = { 310000, 30000, 1000 };
-    String[] yearMonths = { "202104", "202105", "202110" };
-    List<Budget> budgets = new ArrayList<>();
-
-    for (int i = 0; i < amounts.length; i++) {
-      budgets.add(new Budget(yearMonths[i], amounts[i]));
-    }
+    int[] amounts = {310000, 30000, 1000};
+    String[] yearMonths = {"202104", "202105", "202110"};
+    List<Budget> budgets = getBudgets(amounts, yearMonths);
 
     when(budgetRepo.getAll()).thenReturn(budgets);
 
-    double queryBudget = this.finance.queryBudget(LocalDate.of(2021, 4, 1), LocalDate.of(2021, 5, 31));
+    double queryBudget = finance.queryBudget(LocalDate.of(2021, 4, 1), LocalDate.of(2021, 5, 31));
     Assertions.assertEquals(queryBudget, 340000d);
   }
 
   @Test
   public void queryPartialMonth() {
-    int[] amounts = { 3100 };
-    String[] yearMonths = { "202110" };
-    List<Budget> budgets = new ArrayList<>();
-
-    for (int i = 0; i < amounts.length; i++) {
-      budgets.add(new Budget(yearMonths[i], amounts[i]));
-    }
+    int[] amounts = {3100};
+    String[] yearMonths = {"202110"};
+    List<Budget> budgets = getBudgets(amounts, yearMonths);
 
     when(budgetRepo.getAll()).thenReturn(budgets);
 
@@ -87,48 +71,55 @@ public class BudgetTests {
   @Test
   public void queryNoData() {
     List<Budget> budgets = new ArrayList<>();
+
     when(budgetRepo.getAll()).thenReturn(budgets);
-    double queryBudget = this.finance.queryBudget(LocalDate.of(2021, 4, 1), LocalDate.of(2021, 5, 31));
+
+    double queryBudget = finance.queryBudget(LocalDate.of(2021, 4, 1), LocalDate.of(2021, 5, 31));
     Assertions.assertEquals(queryBudget, 0);
   }
 
   @Test
   public void queryPartial2Month() {
-    int[] amounts = { 310000, 30000 };
-    String[] yearMonths = { "202110", "202111" };
-    List<Budget> budgets = new ArrayList<>();
-
-    for (int i = 0; i < amounts.length; i++) {
-      budgets.add(new Budget(yearMonths[i], amounts[i]));
-    }
+    int[] amounts = {310000, 30000};
+    String[] yearMonths = {"202110", "202111"};
+    List<Budget> budgets = getBudgets(amounts, yearMonths);
 
     when(budgetRepo.getAll()).thenReturn(budgets);
 
-    double queryBudget = finance.queryBudget(LocalDate.of(2021, 10, 30), LocalDate.of(2021, 11, 10));
+    double queryBudget =
+        finance.queryBudget(LocalDate.of(2021, 10, 30), LocalDate.of(2021, 11, 10));
     Assertions.assertEquals(queryBudget, 30000);
   }
 
   @Test
   public void queryInvalidPeriod() {
     List<Budget> budgets = new ArrayList<>();
+
     when(budgetRepo.getAll()).thenReturn(budgets);
-    double queryBudget = this.finance.queryBudget(LocalDate.of(2021, 5, 1), LocalDate.of(2021, 4, 30));
+
+    double queryBudget = finance.queryBudget(LocalDate.of(2021, 5, 1), LocalDate.of(2021, 4, 30));
     Assertions.assertEquals(queryBudget, 0);
   }
 
   @Test
   public void queryPartial3Month() {
-    int[] amounts = { 300000, 31000, 30 };
-    String[] yearMonths = { "202104", "202105", "202106" };
+    int[] amounts = {300000, 31000, 30};
+    String[] yearMonths = {"202104", "202105", "202106"};
+    List<Budget> budgets = getBudgets(amounts, yearMonths);
+
+    when(budgetRepo.getAll()).thenReturn(budgets);
+
+    double queryBudget = finance.queryBudget(LocalDate.of(2021, 4, 30), LocalDate.of(2021, 6, 3));
+    Assertions.assertEquals(queryBudget, 41003);
+  }
+
+  @NotNull
+  private List<Budget> getBudgets(int[] amounts, String[] yearMonths) {
     List<Budget> budgets = new ArrayList<>();
 
     for (int i = 0; i < amounts.length; i++) {
       budgets.add(new Budget(yearMonths[i], amounts[i]));
     }
-
-    when(budgetRepo.getAll()).thenReturn(budgets);
-    double queryBudget = finance.queryBudget(LocalDate.of(2021, 4, 30), LocalDate.of(2021, 6, 3));
-    Assertions.assertEquals(queryBudget, 41003);
+    return budgets;
   }
-
 }
