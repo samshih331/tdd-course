@@ -83,7 +83,7 @@ public class BudgetTests {
     budgets.add(april2021);
 
     Budget may2021 = new Budget();
-    may2021.setAmount(30000);
+    may2021.setAmount(31000);
     may2021.setYearMonth("202105");
     budgets.add(may2021);
 
@@ -95,7 +95,7 @@ public class BudgetTests {
     budgetRepo.setBudgets(budgets);
     finance = new Finance(budgetRepo);
     double queryBudget = finance.queryBudget(LocalDate.of(2021, 4, 30), LocalDate.of(2021, 6, 3));
-    Assertions.assertEquals(queryBudget, 40003);
+    Assertions.assertEquals(queryBudget, 41003);
   }
 
   @Test
